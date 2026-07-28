@@ -14,19 +14,24 @@
     --violet-light: #B39DDB;
     --teal: #00897B;
     --teal-light: #4DB6AC;
+    --cyan: #00BFA5;
+    --cyan-glow: #64FFDA;
     --bg: #0A0A0B;
     --bg-card: #121214;
     --bg-card-hover: #1A1A1E;
     --bg-filter: #0F0F11;
     --text-primary: #F5F5F7;
-    --text-secondary: #A0A0AA;
-    --text-muted: #52525B;
+    --text-secondary: #ACACB6;
+    --text-muted: #57575F;
     --border: rgba(255, 255, 255, 0.06);
     --border-active: rgba(255, 61, 0, 0.4);
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
     --radius-xl: 24px;
+    --steel-dark: #131211;
+    --steel-mid: #201e1c;
+    --glass-bevel: rgba(255,255,255,0.09);
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -46,6 +51,37 @@
   }
   .bg-ambient { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
   .bg-parallax-layer { position: absolute; inset: 0; will-change: transform; transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+  /* ============================================================
+     SISTEMA "STEEL VAULT & RAW CHALK" — fondo cinemático multinivel
+     Capa 1: pared de concreto/acero oxidado con chiaroscuro + vignette
+     Capa 2: plancha de acero diamantada + rejilla de rack de potencia
+     Capa 3: partículas de tiza/magnesio en suspensión, reactivas al scroll
+     ============================================================ */
+  .bg-steel-wall { position: absolute; inset: 0; background:
+      radial-gradient(ellipse 130% 85% at 50% 38%, rgba(24,22,20,0) 35%, rgba(0,0,0,0.62) 100%),
+      repeating-linear-gradient(113deg, rgba(255,255,255,0.014) 0px, rgba(255,255,255,0.014) 1px, transparent 1px, transparent 4px),
+      linear-gradient(158deg, var(--steel-mid) 0%, var(--steel-dark) 45%, #08080a 100%);
+  }
+  .bg-steel-wall::before { content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 13% 22%, rgba(140,70,32,0.09), transparent 24%),
+        radial-gradient(circle at 84% 64%, rgba(110,58,28,0.08), transparent 28%),
+        radial-gradient(circle at 42% 88%, rgba(120,64,30,0.07), transparent 22%),
+        radial-gradient(circle at 68% 12%, rgba(90,90,95,0.05), transparent 20%);
+      mix-blend-mode: overlay;
+  }
+  .bg-diamond-plate { position: absolute; inset: 0; opacity: 0.05; mix-blend-mode: screen; }
+  .bg-rack-cage { position: absolute; inset: 0; opacity: 0.09; }
+  .bg-chalk-layer { position: absolute; inset: 0; overflow: hidden; }
+  .chalk-particle { position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.9), rgba(255,255,255,0.15) 60%, transparent 75%); filter: blur(0.5px); opacity: 0; animation: chalkDrift linear infinite; }
+  @keyframes chalkDrift {
+    0% { transform: translate(0, 0) scale(0.8); opacity: 0; }
+    8% { opacity: var(--chalk-op, 0.5); }
+    50% { transform: translate(var(--chalk-dx, 12px), calc(var(--chalk-dy, -60px) * 0.5)) scale(1); }
+    92% { opacity: var(--chalk-op, 0.5); }
+    100% { transform: translate(calc(var(--chalk-dx, 12px) * 2), var(--chalk-dy, -120px)) scale(0.7); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { .chalk-particle { animation: none; opacity: 0; } }
   .bg-blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.5; will-change: transform; animation: bgBlobDrift 26s ease-in-out infinite; }
   .bg-blob-fire { top: -12%; left: -8%; width: 46vw; height: 46vw; background: radial-gradient(circle, rgba(255,61,0,0.16), transparent 70%); animation-duration: 24s; }
   .bg-blob-gold { top: 8%; right: -12%; width: 38vw; height: 38vw; background: radial-gradient(circle, rgba(255,214,0,0.10), transparent 70%); animation-duration: 30s; animation-delay: -6s; }
@@ -53,7 +89,6 @@
   .bg-blob-teal { bottom: -14%; right: -6%; width: 40vw; height: 40vw; background: radial-gradient(circle, rgba(0,137,123,0.11), transparent 70%); animation-duration: 28s; animation-delay: -18s; }
   @keyframes bgBlobDrift { 0%, 100% { transform: translate(0, 0) scale(1); } 33% { transform: translate(3%, -4%) scale(1.06); } 66% { transform: translate(-4%, 3%) scale(0.97); } }
   .bg-fibers { position: absolute; inset: -5% -5%; width: 110%; height: 110%; opacity: 0.05; }
-  .bg-mural { position: absolute; top: 50%; left: 50%; width: 134vw; height: calc(134vw * 4 / 3); transform: translate(-50%, -50%); opacity: 0.16; }
   .bg-fiber-path { fill: none; stroke-width: 2.2; stroke-linecap: round; animation: bgFiberFlow 3.2s linear infinite alternate; }
   .bg-fiber-path:nth-child(1) { animation-duration: 3.4s; }
   .bg-fiber-path:nth-child(2) { animation-duration: 4.1s; animation-delay: -1s; }
@@ -80,6 +115,39 @@
   .nav-brand-text { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: clamp(2.2rem, 6vw, 3.4rem); letter-spacing: 0.06em; color: var(--text-primary); line-height: 1; text-transform: uppercase; text-shadow: 0 2px 0 rgba(0,0,0,0.55), 0 -1px 0 rgba(255,255,255,0.06); }
   .nav-brand-text span { color: var(--fire); }
   .nav-brand-wordmark { display: flex; flex-direction: column; line-height: 1; align-items: center; }
+  /* ============================================================
+     "JP" — ELECTRICIDAD ESTÁTICA / ALTA TENSIÓN
+     Flicker de neón ámbar + plasma cian sobre el wordmark, con
+     pequeños arcos de electricidad en los bordes. Al hover, la
+     frecuencia del parpadeo se acelera (sobrecarga de voltaje).
+     ============================================================ */
+  .jp-spark { position: relative; display: inline-block; color: var(--gold); animation: jpElectricFlicker 3.4s ease-in-out infinite; }
+  .jp-spark::before, .jp-spark::after { content: ''; position: absolute; width: 16px; height: 2px; left: 50%; background: linear-gradient(90deg, transparent, var(--cyan-glow) 45%, #fff 60%, transparent); opacity: 0; pointer-events: none; filter: drop-shadow(0 0 5px var(--cyan-glow)); animation: jpArc 3.4s ease-in-out infinite; }
+  .jp-spark::before { top: -4px; transform-origin: left center; }
+  .jp-spark::after { bottom: -2px; left: 30%; animation-delay: -1.5s; transform-origin: left center; }
+  @keyframes jpElectricFlicker {
+    0%, 100% { text-shadow: 0 0 4px rgba(255,214,0,0.75), 0 0 12px rgba(255,61,0,0.5), 0 0 22px rgba(0,191,165,0.22); }
+    4% { text-shadow: 0 0 2px rgba(255,214,0,0.3); }
+    7% { text-shadow: 0 0 10px rgba(0,191,165,0.9), 0 0 18px rgba(255,214,0,0.7), 0 0 2px #fff; }
+    9% { text-shadow: 0 0 3px rgba(255,214,0,0.4); }
+    13% { text-shadow: 0 0 5px rgba(255,214,0,0.8), 0 0 14px rgba(255,61,0,0.55); }
+    52% { text-shadow: 0 0 6px rgba(255,214,0,0.9), 0 0 20px rgba(255,109,58,0.65), 0 0 30px rgba(0,191,165,0.35); }
+    55% { text-shadow: 0 0 2px rgba(255,214,0,0.35); }
+    58% { text-shadow: 0 0 8px rgba(0,191,165,0.85), 0 0 16px rgba(255,214,0,0.6); }
+  }
+  @keyframes jpArc {
+    0%, 100% { opacity: 0; transform: translateX(-50%) scaleX(0.4) rotate(0deg); }
+    6% { opacity: 0.9; transform: translateX(-50%) scaleX(1) rotate(-10deg); }
+    8% { opacity: 0.2; }
+    9% { opacity: 0.7; transform: translateX(-50%) scaleX(0.8) rotate(6deg); }
+    11% { opacity: 0; }
+    54% { opacity: 0.85; transform: translateX(-50%) scaleX(1.1) rotate(8deg); }
+    57% { opacity: 0; }
+  }
+  .masthead-brand:hover .jp-spark, .sticky-brand-inner:hover .jp-spark { animation-duration: 0.45s; }
+  .masthead-brand:hover .jp-spark::before, .sticky-brand-inner:hover .jp-spark::before,
+  .masthead-brand:hover .jp-spark::after, .sticky-brand-inner:hover .jp-spark::after { animation-duration: 0.35s; }
+  @media (prefers-reduced-motion: reduce) { .jp-spark, .jp-spark::before, .jp-spark::after { animation: none; } .jp-spark { text-shadow: 0 0 8px rgba(255,214,0,0.6); } }
   .nav-brand-tag { display: flex; align-items: center; gap: 5px; font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fire-glow); margin-top: 6px; }
   .nav-brand-tag::before, .nav-brand-tag::after { content: ''; display: inline-block; width: 10px; height: 1px; background: rgba(255,109,58,0.5); }
   /* ============================================================
@@ -98,7 +166,7 @@
   .nav-badge { display: inline-block; background: rgba(255, 61, 0, 0.1); border: 1px solid rgba(255, 61, 0, 0.2); color: var(--fire-glow); font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
   .hero { padding: 3rem 2rem 2.5rem; max-width: 1200px; margin: 0 auto; }
   .hero-eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--fire); margin-bottom: 0.75rem; }
-  .hero h1 { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: clamp(2.2rem, 5vw, 3.8rem); line-height: 1.05; letter-spacing: 0.01em; margin-bottom: 1rem; }
+  .hero h1 { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: clamp(2.2rem, 5vw, 3.8rem); line-height: 1.05; letter-spacing: 0.01em; margin-bottom: 1rem; text-shadow: 0 2px 10px rgba(0,0,0,0.55); }
   .hero h1 em { font-style: normal; color: var(--fire); }
   .hero-sub { color: var(--text-secondary); font-size: 1rem; max-width: 720px; margin-bottom: 1.5rem; }
   .hero-stats { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; align-items: center; }
@@ -166,8 +234,8 @@
   .grid-wrap { max-width: 1200px; margin: 0 auto; padding: 2rem 2rem 4rem; }
   .grid-meta { font-size: 13px; color: var(--text-muted); margin-bottom: 1.25rem; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; }
-  .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: transform 0.32s cubic-bezier(0.16,1,0.3,1), border-color 0.3s ease, box-shadow 0.4s ease, background 0.3s ease; display: flex; flex-direction: column; }
-  .card:hover, .card:focus-visible { transform: translateY(-5px); border-color: rgba(255,61,0,0.35); background: var(--bg-card-hover); box-shadow: 0 0 0 1px rgba(255,61,0,0.1), 0 0 44px -6px rgba(255,61,0,0.28), 0 24px 44px -16px rgba(0,0,0,0.6), 0 10px 18px rgba(0,0,0,0.32); }
+  .card { position: relative; background: linear-gradient(160deg, rgba(30,29,32,0.75), rgba(9,9,10,0.86)); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: transform 0.32s cubic-bezier(0.16,1,0.3,1), border-color 0.3s ease, box-shadow 0.4s ease, background 0.3s ease; display: flex; flex-direction: column; box-shadow: inset 0 1px 0 var(--glass-bevel), inset 0 -1px 0 rgba(0,0,0,0.45), 0 14px 32px -16px rgba(0,0,0,0.6); }
+  .card:hover, .card:focus-visible { transform: translateY(-5px); border-color: rgba(255,61,0,0.35); background: linear-gradient(160deg, rgba(38,36,40,0.8), rgba(12,12,13,0.9)); box-shadow: inset 0 1px 0 var(--glass-bevel), 0 0 0 1px rgba(255,61,0,0.1), 0 0 44px -6px rgba(255,61,0,0.28), 0 24px 44px -16px rgba(0,0,0,0.6), 0 10px 18px rgba(0,0,0,0.32); }
   .card.completed { opacity: 0.5; }
   .card.completed .card-desc, .card.completed h2 { opacity: 0.7; }
   .card-accent { height: 4px; width: 100%; background: linear-gradient(90deg, var(--fire), var(--gold)); flex-shrink: 0; }
@@ -177,7 +245,7 @@
   .tag-disc-musculacion { background: rgba(255,61,0,0.08); color: var(--fire-glow); }
   .tag-level-avanzado { background: rgba(124,77,255,0.12); color: var(--violet-light); }
   .tag-done { background: rgba(0,137,123,0.14); color: var(--teal-light); }
-  .card h2 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.4rem; line-height: 1.2; margin-bottom: 0.5rem; color: var(--text-primary); }
+  .card h2 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.4rem; line-height: 1.2; margin-bottom: 0.5rem; color: var(--text-primary); text-shadow: 0 1px 4px rgba(0,0,0,0.4); }
   .card-desc { font-size: 13.5px; color: var(--text-secondary); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .card-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 10px; pointer-events: none; }
   .card-footer button { pointer-events: auto; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); color: var(--text-primary); padding: 6px 14px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; outline: none; transition: all 0.2s ease; }
@@ -204,7 +272,24 @@
   .block-title.warmup { color: var(--gold); }
   .block-title.main { color: var(--fire-glow); }
   .block-title.metcon { color: var(--teal-light); }
+  .block-title.cardio { color: var(--violet-light); }
   .block-title.core { color: var(--violet-light); }
+  .block-title.oly { color: var(--cyan-glow); }
+  /* ============================================================
+     SEMÁFORO SEMÁNTICO DE BLOQUES — barra lateral indicadora
+     según el tipo de bloque (Oly = Azul, Fuerza = Teal,
+     Metcon = Fire, Cardio = Púrpura). Solo capa visual: no toca
+     el contenido ni la lógica, se engancha vía :has() al título
+     interno que ya renderiza cada bloque.
+     ============================================================ */
+  .block:has(.block-title.warmup) { border-left: 4px solid var(--gold); }
+  .block:has(.block-title.main) { border-left: 4px solid var(--teal); }
+  .block:has(.block-title.metcon) { border-left: 4px solid var(--fire); }
+  .block:has(.block-title.cardio) { border-left: 4px solid var(--violet); }
+  .block:has(.block-title.oly) { border-left: 4px solid var(--cyan); }
+  .block:has(.block-title.main) .group-block { border-left: 3px solid rgba(0,137,123,0.4); }
+  .block:has(.block-title.metcon) .group-block { border-left: 3px solid rgba(255,61,0,0.4); }
+  .block:has(.block-title.cardio) .group-block { border-left: 3px solid rgba(124,77,255,0.4); }
   .block-content { padding: 0.5rem 1.25rem; }
   .block-optional-tag { font-size: 9.5px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--violet-light); background: rgba(124,77,255,0.12); padding: 2px 8px; border-radius: 4px; margin-left: 8px; vertical-align: middle; }
   .block-check-badge { font-size: 11px; font-weight: 800; color: var(--teal-light); display: none; align-items: center; gap: 4px; letter-spacing: 0.04em; text-transform: uppercase; }
@@ -269,10 +354,62 @@
   .cardio-timer.phase-rest.running .cardio-timer-toggle { background: rgba(255,61,0,0.2); border-color: var(--fire); }
   .cardio-timer.phase-prepare.running .cardio-timer-toggle { background: rgba(124,77,255,0.22); border-color: var(--violet); }
   .cardio-timer-reset:hover { background: rgba(255,255,255,0.12); }
+  /* ============================================================
+     RETROALIMENTACIÓN DE CUENTA REGRESIVA — pulso de luz en la
+     caja del reloj durante los últimos 3 segundos de cada fase,
+     sincronizado con los beeps sonoros.
+     ============================================================ */
+  .ex-timer.countdown-glow, .cardio-timer.countdown-glow { animation: timerGlowPulse 1s ease-in-out infinite; border-radius: var(--radius-md); }
+  @keyframes timerGlowPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,214,0,0); }
+    50% { box-shadow: 0 0 26px 4px rgba(255,214,0,0.35), inset 0 0 18px rgba(255,214,0,0.08); }
+  }
+  @media (prefers-reduced-motion: reduce) { .ex-timer.countdown-glow, .cardio-timer.countdown-glow { animation: none; } }
+  /* ============================================================
+     INDICADOR DE WAKELOCK — badge que confirma que la pantalla
+     no se apagará mientras corre un temporizador.
+     ============================================================ */
+  .wakelock-badge { display: none; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--cyan-glow); background: rgba(0,191,165,0.1); border: 1px solid rgba(0,191,165,0.3); padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+  .wakelock-badge.visible { display: inline-flex; }
+  .wakelock-badge .wl-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan-glow); box-shadow: 0 0 6px var(--cyan-glow); animation: wlPulse 1.6s ease-in-out infinite; }
+  @keyframes wlPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+  /* ============================================================
+     MINI-HUD FLOTANTE — cuando un temporizador activo sale del
+     campo visual al scrollear, este panel fijo abajo mantiene al
+     atleta al tanto sin que tenga que volver a subir la pantalla.
+     ============================================================ */
+  .mini-timer-hud { position: fixed; left: 50%; bottom: 16px; transform: translate(-50%, 140%); width: min(94vw, 460px); z-index: 250; background: rgba(14,13,14,0.92); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,0.1); border-radius: 999px; padding: 8px 10px 8px 18px; display: flex; align-items: center; gap: 12px; box-shadow: 0 16px 40px -12px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.03); transition: transform 0.35s cubic-bezier(0.16,1,0.3,1); pointer-events: none; }
+  .mini-timer-hud.visible { transform: translate(-50%, 0); pointer-events: auto; }
+  .mini-timer-hud-phase { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal-light); flex-shrink: 0; }
+  .mini-timer-hud.hud-rest .mini-timer-hud-phase { color: var(--fire-glow); }
+  .mini-timer-hud.hud-prepare .mini-timer-hud-phase { color: var(--violet-light); }
+  .mini-timer-hud-display { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.5rem; color: var(--text-primary); font-variant-numeric: tabular-nums; line-height: 1; flex: 1; }
+  .mini-timer-hud-controls { display: flex; gap: 6px; flex-shrink: 0; }
+  .mini-timer-hud-btn { background: rgba(255,255,255,0.07); border: 1px solid var(--border); color: var(--text-primary); width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 13px; transition: all 0.2s ease; }
+  .mini-timer-hud-btn:hover { background: rgba(255,214,0,0.18); border-color: var(--gold); }
+  @media (max-width: 640px) { .mini-timer-hud { bottom: 10px; padding: 7px 8px 7px 14px; gap: 8px; } .mini-timer-hud-display { font-size: 1.25rem; } .mini-timer-hud-btn { width: 30px; height: 30px; } }
   .set-checks { display: flex; gap: 6px; flex-wrap: wrap; }
   .set-check { width: 27px; height: 27px; border-radius: 50%; border: 1px solid var(--border); background: rgba(255,255,255,0.03); cursor: pointer; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: all 0.2s ease; font-family: 'Inter', sans-serif; flex-shrink: 0; }
   .set-check:hover { border-color: rgba(255,61,0,0.4); color: var(--text-primary); }
   .set-check.done { background: var(--teal); border-color: var(--teal); color: #fff; }
+  /* ============================================================
+     MICROINTERACCIONES — feedback táctil neón al completar series
+     o bloques enteros: destello instantáneo + tachado sutil.
+     ============================================================ */
+  @keyframes setCheckFlash {
+    0% { box-shadow: 0 0 0 0 rgba(0,191,165,0.85); }
+    60% { box-shadow: 0 0 0 7px rgba(0,191,165,0.28), 0 0 18px 4px rgba(0,137,123,0.5); }
+    100% { box-shadow: 0 0 0 0 rgba(0,191,165,0); }
+  }
+  .set-check.set-check-flash { animation: setCheckFlash 0.5s ease-out; }
+  @keyframes blockFlashComplete {
+    0% { box-shadow: 0 0 0 0 rgba(0,191,165,0.5); }
+    45% { box-shadow: 0 0 44px 6px rgba(0,191,165,0.4), inset 0 0 26px rgba(0,191,165,0.12); }
+    100% { box-shadow: 0 0 0 0 rgba(0,191,165,0); }
+  }
+  .block.flash-complete, .group-block.flash-complete { animation: blockFlashComplete 0.9s ease-out; }
+  .block.block-complete .block-title, .group-block.block-complete .group-block-title { text-decoration: line-through; text-decoration-thickness: 2px; text-decoration-color: rgba(77,182,172,0.55); opacity: 0.82; transition: opacity 0.3s ease; }
+  @media (prefers-reduced-motion: reduce) { .set-check.set-check-flash, .block.flash-complete, .group-block.flash-complete { animation: none; } }
   .group-block { border: 1px solid var(--border); border-radius: var(--radius-md); margin: 0.5rem 0 1.25rem; overflow: hidden; transition: border-color 0.3s ease; }
   .group-block:last-child { margin-bottom: 0.5rem; }
   .group-block-header { padding: 0.75rem 1rem; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
@@ -343,6 +480,38 @@
 </head>
 <body>
 <div class="bg-ambient" aria-hidden="true">
+  <div class="bg-parallax-layer" data-depth="0.02"><div class="bg-steel-wall"></div></div>
+  <div class="bg-parallax-layer" data-depth="0.09">
+    <svg class="bg-diamond-plate" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="diamondPlatePattern" width="40" height="40" patternUnits="userSpaceOnUse" patternTransform="rotate(0)">
+          <rect width="40" height="40" fill="none"/>
+          <path d="M20 6 L34 20 L20 34 L6 20 Z" fill="none" stroke="#c9c9cf" stroke-width="1.4"/>
+          <circle cx="20" cy="20" r="2.4" fill="#c9c9cf"/>
+        </pattern>
+      </defs>
+      <rect x="0" y="0" width="400" height="400" fill="url(#diamondPlatePattern)"/>
+    </svg>
+    <svg class="bg-rack-cage" viewBox="0 0 1200 1600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke="#8a8a92" stroke-width="5">
+        <line x1="90" y1="-40" x2="90" y2="1640"/>
+        <line x1="150" y1="-40" x2="150" y2="1640"/>
+        <line x1="1050" y1="-40" x2="1050" y2="1640"/>
+        <line x1="1110" y1="-40" x2="1110" y2="1640"/>
+        <line x1="60" y1="180" x2="1140" y2="180" stroke-width="4"/>
+        <line x1="60" y1="720" x2="1140" y2="720" stroke-width="4"/>
+        <line x1="60" y1="1260" x2="1140" y2="1260" stroke-width="4"/>
+      </g>
+      <g fill="#8a8a92">
+        <circle cx="90" cy="180" r="6"/><circle cx="150" cy="180" r="6"/>
+        <circle cx="1050" cy="180" r="6"/><circle cx="1110" cy="180" r="6"/>
+        <circle cx="90" cy="720" r="6"/><circle cx="150" cy="720" r="6"/>
+        <circle cx="1050" cy="720" r="6"/><circle cx="1110" cy="720" r="6"/>
+        <circle cx="90" cy="1260" r="6"/><circle cx="150" cy="1260" r="6"/>
+        <circle cx="1050" cy="1260" r="6"/><circle cx="1110" cy="1260" r="6"/>
+      </g>
+    </svg>
+  </div>
   <div class="bg-parallax-layer" data-depth="0.06"><div class="bg-blob bg-blob-fire"></div></div>
   <div class="bg-parallax-layer" data-depth="0.10"><div class="bg-blob bg-blob-gold"></div></div>
   <div class="bg-parallax-layer" data-depth="0.04"><div class="bg-blob bg-blob-violet"></div></div>
@@ -360,88 +529,8 @@
       <path class="bg-fiber-path" d="M -100 1480 C 200 1360, 460 1560, 720 1440 S 1040 1300, 1300 1480" stroke="url(#fiberGrad1)" />
     </svg>
   </div>
-  <div class="bg-parallax-layer" data-depth="0.12">
-    <svg class="bg-mural" viewBox="0 0 1200 1600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <filter id="aerosolHalo" x="-150%" y="-150%" width="400%" height="400%">
-          <feGaussianBlur stdDeviation="16"/>
-        </filter>
-        <g id="stencilBarbell">
-          <g filter="url(#aerosolHalo)" opacity="0.5">
-            <rect x="-150" y="-6" width="300" height="12" rx="4"/>
-            <rect x="-172" y="-9" width="22" height="18" rx="3"/>
-            <rect x="150" y="-9" width="22" height="18" rx="3"/>
-            <circle cx="-188" cy="0" r="40"/>
-            <circle cx="188" cy="0" r="40"/>
-          </g>
-          <g stroke="rgba(10,10,11,0.7)" stroke-width="3">
-            <rect x="-150" y="-6" width="300" height="12" rx="4"/>
-            <rect x="-172" y="-9" width="22" height="18" rx="3"/>
-            <rect x="150" y="-9" width="22" height="18" rx="3"/>
-            <circle cx="-188" cy="0" r="40"/>
-            <circle cx="188" cy="0" r="40"/>
-            <circle cx="-188" cy="0" r="13" fill="none"/>
-            <circle cx="188" cy="0" r="13" fill="none"/>
-          </g>
-          <rect x="-191" y="38" width="6" height="30" rx="3" stroke="none"/>
-          <rect x="181" y="38" width="6" height="22" rx="3" stroke="none"/>
-        </g>
-        <g id="stencilKettlebell">
-          <g filter="url(#aerosolHalo)" opacity="0.5">
-            <path d="M -55 20 C -55 55 55 55 55 20 C 55 -20 30 -45 0 -45 C -30 -45 -55 -20 -55 20 Z"/>
-          </g>
-          <g stroke="rgba(10,10,11,0.7)" stroke-width="3">
-            <path d="M -55 20 C -55 55 55 55 55 20 C 55 -20 30 -45 0 -45 C -30 -45 -55 -20 -55 20 Z"/>
-            <path d="M -22 -45 C -22 -80 22 -80 22 -45" fill="none"/>
-          </g>
-          <rect x="-9" y="52" width="6" height="26" rx="3" stroke="none"/>
-        </g>
-        <g id="stencilHexDumbbell">
-          <g filter="url(#aerosolHalo)" opacity="0.5">
-            <polygon points="-70,-34 -99.4,-17 -99.4,17 -70,34 -40.6,17 -40.6,-17"/>
-            <polygon points="70,-34 40.6,-17 40.6,17 70,34 99.4,17 99.4,-17"/>
-            <rect x="-40" y="-7" width="80" height="14" rx="4"/>
-          </g>
-          <g stroke="rgba(10,10,11,0.7)" stroke-width="3">
-            <polygon points="-70,-34 -99.4,-17 -99.4,17 -70,34 -40.6,17 -40.6,-17"/>
-            <polygon points="70,-34 40.6,-17 40.6,17 70,34 99.4,17 99.4,-17"/>
-            <rect x="-40" y="-7" width="80" height="14" rx="4"/>
-            <circle cx="-70" cy="0" r="10" fill="none"/>
-            <circle cx="70" cy="0" r="10" fill="none"/>
-          </g>
-          <rect x="-5" y="36" width="6" height="24" rx="3" stroke="none"/>
-        </g>
-      </defs>
-      <g class="bg-mural-wall">
-        <rect x="0" y="0" width="1200" height="1600" fill="#ffffff" opacity="0.015"/>
-        <line x1="300" y1="0" x2="300" y2="1600" stroke="#ffffff" stroke-width="1.5" opacity="0.045"/>
-        <line x1="600" y1="0" x2="600" y2="1600" stroke="#ffffff" stroke-width="1.5" opacity="0.045"/>
-        <line x1="900" y1="0" x2="900" y2="1600" stroke="#ffffff" stroke-width="1.5" opacity="0.045"/>
-        <line x1="0" y1="400" x2="1200" y2="400" stroke="#ffffff" stroke-width="1.5" opacity="0.035"/>
-        <line x1="0" y1="800" x2="1200" y2="800" stroke="#ffffff" stroke-width="1.5" opacity="0.035"/>
-        <line x1="0" y1="1200" x2="1200" y2="1200" stroke="#ffffff" stroke-width="1.5" opacity="0.035"/>
-        <ellipse cx="980" cy="180" rx="120" ry="70" fill="#ffffff" opacity="0.025"/>
-        <ellipse cx="180" cy="1420" rx="150" ry="85" fill="#ffffff" opacity="0.02"/>
-        <path d="M 480 0 L 500 170 L 478 330 L 512 500" stroke="#ffffff" stroke-width="1" fill="none" opacity="0.05"/>
-        <path d="M 1050 700 L 1020 850 L 1055 980" stroke="#ffffff" stroke-width="1" fill="none" opacity="0.045"/>
-      </g>
-      <use href="#stencilBarbell" transform="translate(500,350) rotate(-8)" fill="#FFD600"/>
-      <use href="#stencilKettlebell" transform="translate(850,520)" fill="#7C4DFF"/>
-      <use href="#stencilHexDumbbell" transform="translate(300,950) rotate(-10)" fill="#4DB6AC"/>
-      <use href="#stencilHexDumbbell" transform="translate(930,1180) rotate(8) scale(0.62)" fill="#FF6D3A"/>
-      <g transform="translate(600,240) rotate(-5)">
-        <text x="0" y="0" text-anchor="middle" font-family="'Barlow Condensed', sans-serif" font-weight="900" font-size="92" fill="#FFD600" filter="url(#aerosolHalo)" opacity="0.55">EARN IT</text>
-        <text x="0" y="0" text-anchor="middle" font-family="'Barlow Condensed', sans-serif" font-weight="900" font-size="92" fill="#FFD600" stroke="rgba(10,10,11,0.7)" stroke-width="3" paint-order="stroke">EARN IT</text>
-      </g>
-      <g transform="translate(600,760) rotate(4)">
-        <text x="0" y="0" text-anchor="middle" font-family="'Barlow Condensed', sans-serif" font-weight="900" font-size="78" fill="#FF6D3A" filter="url(#aerosolHalo)" opacity="0.55">BEAST MODE</text>
-        <text x="0" y="0" text-anchor="middle" font-family="'Barlow Condensed', sans-serif" font-weight="900" font-size="78" fill="#FF6D3A" stroke="rgba(10,10,11,0.7)" stroke-width="3" paint-order="stroke">BEAST MODE</text>
-      </g>
-      <g transform="translate(600,1340) rotate(-4)">
-        <text x="0" y="0" text-anchor="middle" font-family="'Barlow Condensed', sans-serif" font-weight="900" font-size="56" fill="#4DB6AC" filter="url(#aerosolHalo)" opacity="0.55">NO PAIN NO GAIN</text>
-        <text x="0" y="0" text-anchor="middle" font-family="'Barlow Condensed', sans-serif" font-weight="900" font-size="56" fill="#4DB6AC" stroke="rgba(10,10,11,0.7)" stroke-width="3" paint-order="stroke">NO PAIN NO GAIN</text>
-      </g>
-    </svg>
+  <div class="bg-parallax-layer" data-depth="0.22">
+    <div class="bg-chalk-layer" id="chalk-particles-layer"></div>
   </div>
 </div>
 <header class="masthead" id="masthead">
@@ -460,7 +549,7 @@
       </svg>
     </div>
     <div class="nav-brand-wordmark">
-      <span class="nav-brand-text">COACH<span>&nbsp;JP</span></span>
+      <span class="nav-brand-text">COACH<span class="jp-spark">&nbsp;JP</span></span>
       <span class="nav-brand-tag">Heavy Duty Training</span>
     </div>
   </a>
@@ -481,7 +570,7 @@
       </svg>
     </div>
     <div class="nav-brand-wordmark">
-      <span class="nav-brand-text">COACH<span>&nbsp;JP</span></span>
+      <span class="nav-brand-text">COACH<span class="jp-spark">&nbsp;JP</span></span>
     </div>
   </a>
 </div>
@@ -595,6 +684,7 @@
       <div class="modal-title-block">
         <div class="card-tags" id="modal-tags"></div>
         <div class="modal-title" id="modal-title"></div>
+        <span class="wakelock-badge" id="wakelock-badge-modal"><span class="wl-dot"></span>Pantalla Activa</span>
       </div>
       <button class="modal-close" id="modal-close" aria-label="Cerrar">&#x2715;</button>
     </div>
@@ -617,6 +707,15 @@
       <iframe id="video-popup-iframe" src="" title="Video técnica de ejercicio" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
     <div class="video-popup-fallback">¿No carga? <a id="video-popup-fallback-link" href="#" target="_blank" rel="noopener">Abrilo en YouTube ↗</a></div>
+  </div>
+</div>
+<div class="mini-timer-hud" id="mini-timer-hud" role="status" aria-live="polite">
+  <span class="mini-timer-hud-phase" id="mini-timer-hud-phase">Trabajo</span>
+  <span class="mini-timer-hud-display" id="mini-timer-hud-display">00:00</span>
+  <span class="wakelock-badge" id="wakelock-badge-hud"><span class="wl-dot"></span>Pantalla Activa</span>
+  <div class="mini-timer-hud-controls">
+    <button type="button" class="mini-timer-hud-btn" id="mini-timer-hud-toggle" aria-label="Pausar/Reanudar">❚❚</button>
+    <button type="button" class="mini-timer-hud-btn" id="mini-timer-hud-reset" aria-label="Reiniciar">↺</button>
   </div>
 </div>
 <script>
@@ -1164,12 +1263,23 @@ const STORAGE_KEY_MODE = 'coachjp_sergio_mode_v1';
 let wakeLockRef = null;
 let activeTimersCount = 0;
 const timerIntervals = new Map();
+/* ============================================================
+   BADGE DE WAKELOCK — confirma visualmente que la pantalla no
+   se apagará mientras hay un temporizador corriendo.
+   ============================================================ */
+function updateWakeLockBadge() {
+  const visible = !!wakeLockRef;
+  document.querySelectorAll('.wakelock-badge').forEach((badge) => {
+    badge.classList.toggle('visible', visible);
+  });
+}
 async function acquireWakeLock() {
   if (wakeLockRef) return;
   try {
     if ('wakeLock' in navigator) {
       wakeLockRef = await navigator.wakeLock.request('screen');
-      wakeLockRef.addEventListener('release', () => { wakeLockRef = null; });
+      wakeLockRef.addEventListener('release', () => { wakeLockRef = null; updateWakeLockBadge(); });
+      updateWakeLockBadge();
     }
   } catch (e) { /* no soportado o permiso denegado */ }
 }
@@ -1177,6 +1287,7 @@ async function releaseWakeLockIfIdle() {
   if (activeTimersCount <= 0 && wakeLockRef) {
     try { await wakeLockRef.release(); } catch (e) { /* noop */ }
     wakeLockRef = null;
+    updateWakeLockBadge();
   }
 }
 document.addEventListener('visibilitychange', async () => {
@@ -1189,9 +1300,71 @@ function formatTime(totalSeconds) {
   const s = totalSeconds % 60;
   return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
 }
+/* ============================================================
+   MINI-HUD FLOTANTE — sigue al temporizador activo cuando sale
+   del campo visual por scroll, para no perder de vista el tiempo
+   restante mientras se lee el siguiente ejercicio.
+   ============================================================ */
+let trackedTimerEl = null;
+let miniHudObserver = null;
+function ensureMiniHudObserver() {
+  if (miniHudObserver || !('IntersectionObserver' in window)) return;
+  miniHudObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.target !== trackedTimerEl) return;
+      const hud = document.getElementById('mini-timer-hud');
+      if (!hud) return;
+      hud.classList.toggle('visible', !entry.isIntersecting);
+    });
+  }, { threshold: 0 });
+}
+function trackTimerForHud(el) {
+  ensureMiniHudObserver();
+  if (trackedTimerEl && trackedTimerEl !== el && miniHudObserver) {
+    try { miniHudObserver.unobserve(trackedTimerEl); } catch (e) { /* noop */ }
+  }
+  trackedTimerEl = el;
+  syncMiniHud(el);
+  if (miniHudObserver) miniHudObserver.observe(el);
+}
+function untrackTimerForHud(el) {
+  if (trackedTimerEl !== el) return;
+  if (miniHudObserver) { try { miniHudObserver.unobserve(el); } catch (e) { /* noop */ } }
+  trackedTimerEl = null;
+  const hud = document.getElementById('mini-timer-hud');
+  if (hud) hud.classList.remove('visible');
+}
+function syncMiniHud(el) {
+  if (el !== trackedTimerEl) return;
+  const hud = document.getElementById('mini-timer-hud');
+  if (!hud) return;
+  const isCardio = el.classList.contains('cardio-timer');
+  const displayEl = el.querySelector(isCardio ? '.cardio-timer-display' : '.ex-timer-display');
+  const phaseText = isCardio
+    ? (el.querySelector('.cardio-timer-phase') ? el.querySelector('.cardio-timer-phase').textContent : '')
+    : (el.querySelector('.ex-timer-tag') ? el.querySelector('.ex-timer-tag').textContent : '');
+  const hudPhase = document.getElementById('mini-timer-hud-phase');
+  const hudDisplay = document.getElementById('mini-timer-hud-display');
+  if (hudPhase) hudPhase.textContent = phaseText;
+  if (hudDisplay && displayEl) hudDisplay.textContent = displayEl.textContent;
+  const isRest = isCardio ? el.classList.contains('phase-rest') : el.classList.contains('rest');
+  const isPrepare = isCardio && el.classList.contains('phase-prepare');
+  hud.classList.toggle('hud-rest', isRest);
+  hud.classList.toggle('hud-prepare', isPrepare);
+}
+document.getElementById('mini-timer-hud-toggle').addEventListener('click', () => {
+  if (!trackedTimerEl) return;
+  unlockAudio();
+  if (trackedTimerEl.classList.contains('cardio-timer')) { toggleCardioTimer(trackedTimerEl); } else { toggleExTimer(trackedTimerEl); }
+});
+document.getElementById('mini-timer-hud-reset').addEventListener('click', () => {
+  if (!trackedTimerEl) return;
+  if (trackedTimerEl.classList.contains('cardio-timer')) { resetCardioTimer(trackedTimerEl); } else { resetExTimer(trackedTimerEl); }
+});
 function updateTimerDisplay(el, seconds) {
   const display = el.querySelector('.ex-timer-display');
   if (display) display.textContent = formatTime(seconds);
+  syncMiniHud(el);
 }
 /* ============================================================
    AUDIO — Web Audio API pura, un único AudioContext global
@@ -1253,6 +1426,7 @@ async function startExTimer(el) {
   if (btn) { btn.textContent = '❚❚'; btn.setAttribute('aria-label', 'Pausar temporizador'); }
   activeTimersCount++;
   await acquireWakeLock();
+  trackTimerForHud(el);
   const interval = setInterval(() => {
     let remaining = parseInt(el.dataset.remaining, 10) - 1;
     if (remaining <= 0) {
@@ -1263,29 +1437,39 @@ async function startExTimer(el) {
     }
     el.dataset.remaining = String(remaining);
     updateTimerDisplay(el, remaining);
+    if (remaining === 3 || remaining === 2 || remaining === 1) {
+      el.classList.add('countdown-glow');
+      playBeep(880, 0.12, 0.6);
+    } else {
+      el.classList.remove('countdown-glow');
+    }
   }, 1000);
   timerIntervals.set(el, interval);
 }
 function pauseExTimer(el) {
   el.dataset.running = '0';
   el.classList.remove('running');
+  el.classList.remove('countdown-glow');
   const btn = el.querySelector('.ex-timer-toggle');
   if (btn) { btn.textContent = '▶'; btn.setAttribute('aria-label', 'Iniciar temporizador'); }
   const interval = timerIntervals.get(el);
   if (interval) { clearInterval(interval); timerIntervals.delete(el); }
   activeTimersCount = Math.max(0, activeTimersCount - 1);
   releaseWakeLockIfIdle();
+  untrackTimerForHud(el);
 }
 function finishExTimer(el) {
   const interval = timerIntervals.get(el);
   if (interval) { clearInterval(interval); timerIntervals.delete(el); }
   el.dataset.running = '0';
   el.classList.remove('running');
+  el.classList.remove('countdown-glow');
   el.classList.add('done');
   const btn = el.querySelector('.ex-timer-toggle');
   if (btn) { btn.textContent = '▶'; btn.setAttribute('aria-label', 'Iniciar temporizador'); }
   activeTimersCount = Math.max(0, activeTimersCount - 1);
   releaseWakeLockIfIdle();
+  untrackTimerForHud(el);
   playBeep(1568, 0.3, 0.65);
   if (navigator.vibrate) { try { navigator.vibrate([200, 100, 200]); } catch (e) { /* noop */ } }
 }
@@ -1295,11 +1479,15 @@ function resetExTimer(el) {
   el.dataset.remaining = String(total);
   updateTimerDisplay(el, total);
   el.classList.remove('done');
+  el.classList.remove('countdown-glow');
 }
 function toggleExTimer(el) {
   if (el.dataset.running === '1') { pauseExTimer(el); } else { startExTimer(el); }
 }
 function clearAllExTimers() {
+  trackedTimerEl = null;
+  const hud = document.getElementById('mini-timer-hud');
+  if (hud) hud.classList.remove('visible');
   timerIntervals.forEach((interval) => clearInterval(interval));
   timerIntervals.clear();
   activeTimersCount = 0;
@@ -1350,6 +1538,8 @@ function updateCardioDisplay(el) {
     const fraction = Math.min(1, Math.max(0, (totalForPhase - remaining) / totalForPhase));
     barFill.style.width = (fraction * 100) + '%';
   }
+  el.classList.toggle('countdown-glow', remaining === 3 || remaining === 2 || remaining === 1);
+  syncMiniHud(el);
 }
 function cardioTimerTick(el) {
   let remaining = parseInt(el.dataset.remaining, 10) - 1;
@@ -1391,18 +1581,21 @@ async function startCardioTimer(el) {
   if (btn) { btn.textContent = '❚❚'; btn.setAttribute('aria-label', 'Pausar cronómetro'); }
   activeTimersCount++;
   await acquireWakeLock();
+  trackTimerForHud(el);
   const interval = setInterval(() => cardioTimerTick(el), 1000);
   timerIntervals.set(el, interval);
 }
 function pauseCardioTimer(el) {
   el.dataset.running = '0';
   el.classList.remove('running');
+  el.classList.remove('countdown-glow');
   const btn = el.querySelector('.cardio-timer-toggle');
   if (btn) { btn.textContent = '▶'; btn.setAttribute('aria-label', 'Iniciar cronómetro'); }
   const interval = timerIntervals.get(el);
   if (interval) { clearInterval(interval); timerIntervals.delete(el); }
   activeTimersCount = Math.max(0, activeTimersCount - 1);
   releaseWakeLockIfIdle();
+  untrackTimerForHud(el);
 }
 function finishCardioTimer(el) {
   pauseCardioTimer(el);
@@ -1503,6 +1696,8 @@ async function toggleSetCheck(btn) {
   } else {
     completedSets[key] = true;
     btn.classList.add('done');
+    btn.classList.add('set-check-flash');
+    setTimeout(() => btn.classList.remove('set-check-flash'), 500);
   }
   await saveSetChecks();
   updateBlockCompletionBadge(btn.closest('.group-block') || btn.closest('.block'));
@@ -1511,8 +1706,13 @@ function updateBlockCompletionBadge(container) {
   if (!container) return;
   const checks = container.querySelectorAll('.set-check');
   if (!checks.length) return;
+  const wasComplete = container.classList.contains('block-complete');
   const allDone = Array.from(checks).every((c) => c.classList.contains('done'));
   container.classList.toggle('block-complete', allDone);
+  if (allDone && !wasComplete) {
+    container.classList.add('flash-complete');
+    setTimeout(() => container.classList.remove('flash-complete'), 900);
+  }
 }
 function refreshAllBlockBadges() {
   document.querySelectorAll('.group-block, #modal-exercises-content > .block').forEach((container) => {
@@ -1846,7 +2046,7 @@ function renderCardio(workout) {
     <div class="block js-optional-block">
       <div class="block-header">
         <div class="block-header-row">
-          <div class="block-title metcon">🫀 Bloque Opcional — Cardio Metabólico <span class="block-optional-tag">Modo Completo</span></div>
+          <div class="block-title cardio">🫀 Bloque Opcional — Cardio Metabólico <span class="block-optional-tag">Modo Completo</span></div>
           <span class="block-check-badge">✓ Completo</span>
         </div>
       </div>
@@ -1870,7 +2070,7 @@ function renderCardio(workout) {
           <div class="block-notes">
             <p><strong style="color:var(--gold)">💡 Pautas de ejecución:</strong> ${c.tips}</p>
             <p><strong style="color:var(--teal-light)">🎯 Objetivo:</strong> ${c.objetivo}</p>
-            <p><strong style="color:var(--violet-light)">🔊 Cronómetro con voz:</strong> Al tocar ▶ arranca una cuenta regresiva de 10s para acomodarte en la máquina. Los últimos 3 segundos de cada fase se escuchan en voz alta y el cronómetro anuncia "GO!" y "Stop!" — no hace falta mirar la pantalla todo el tiempo.</p>
+            <p><strong style="color:var(--violet-light)">🔊 Alertas sonoras:</strong> Al tocar ▶ arranca una cuenta regresiva de 10s para acomodarte en la máquina. Los últimos 3 segundos de cada fase suenan con un tono agudo y un pulso de luz en el reloj, y el cambio de fase (arranque/corte) suena con un tono distinto — no hace falta mirar la pantalla todo el tiempo.</p>
           </div>
         </div>
       </div>
@@ -2085,6 +2285,39 @@ function initStickyBrandBar() {
   observer.observe(masthead);
 }
 /* ============================================================
+   PARTÍCULAS DE TIZA/MAGNESIO — capa 3 del fondo "Steel Vault &
+   Raw Chalk", generadas una sola vez y animadas por CSS.
+   ============================================================ */
+function initChalkParticles() {
+  const layer = document.getElementById('chalk-particles-layer');
+  if (!layer) return;
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) return;
+  const COUNT = 26;
+  for (let i = 0; i < COUNT; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'chalk-particle';
+    const size = 2 + Math.random() * 4;
+    const left = Math.random() * 100;
+    const top = 20 + Math.random() * 80;
+    const duration = 9 + Math.random() * 10;
+    const delay = Math.random() * -18;
+    const dx = (Math.random() - 0.5) * 60;
+    const dy = -(80 + Math.random() * 140);
+    const op = 0.25 + Math.random() * 0.35;
+    dot.style.width = size + 'px';
+    dot.style.height = size + 'px';
+    dot.style.left = left + '%';
+    dot.style.top = top + '%';
+    dot.style.animationDuration = duration + 's';
+    dot.style.animationDelay = delay + 's';
+    dot.style.setProperty('--chalk-dx', dx + 'px');
+    dot.style.setProperty('--chalk-dy', dy + 'px');
+    dot.style.setProperty('--chalk-op', op);
+    layer.appendChild(dot);
+  }
+}
+/* ============================================================
    INIT
    ============================================================ */
 async function init() {
@@ -2095,6 +2328,7 @@ async function init() {
   filterGrid();
   initAmbientParallax();
   initStickyBrandBar();
+  initChalkParticles();
 }
 init();
 </script>
